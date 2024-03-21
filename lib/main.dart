@@ -1,8 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:video_conference_app/firebase_options.dart';
-import 'package:video_conference_app/utils/colors.dart';
-import 'package:video_conference_app/view/home_page.dart';
+import 'package:video_conference_app/view/index.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,9 +22,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Video Conference App',
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: backgroundColor,
+        scaffoldBackgroundColor: Colors.teal,
       ),
-      home: const HomePage(),
+      home: const IndexPage(),
     );
   }
 }
