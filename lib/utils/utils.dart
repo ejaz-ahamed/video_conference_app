@@ -1,0 +1,3 @@
+const appId = '96e0997535f245de978e0475f8300694';
+const token =
+    '007eJxTYHjUuVPHR3vHrq2vb8Q0nfx3IPvq4XuvTxy4rGueaPnC7EyiAoOlWaqBpaW5qbFpmpGJaUqqpblFqoGJuWmahbGBgZmlyevbv1MbAhkZNKx3sjIyQCCIL8JQlpmSmh+fnJ+XllqUmpecGp9YUMDAAAD9Oym9';

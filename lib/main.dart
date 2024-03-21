@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Video Conference App',
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: Colors.teal,
+      theme: ThemeData(
+        primarySwatch: Colors.teal,
       ),
       home: const IndexPage(),
     );
