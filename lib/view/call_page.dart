@@ -114,11 +114,169 @@ class _CallPageState extends State<CallPage> {
     );
   }
 
+  Widget _viewrows() {
+    final List<StatefulWidget> list = [];
+    if (widget.role == ClientRoleType.clientRoleBroadcaster) {
+      list.add(
+        AgoraVideoView(
+          controller: VideoViewController.remote(
+            rtcEngine: _engine,
+            canvas: const VideoCanvas(),
+            connection: RtcConnection(channelId: widget.channelName),
+          ),
+        ),
+      );
+    }
+    final views = list;
+    return Column(
+      children: List.generate(
+        views.length,
+        (index) => Expanded(
+          child: views[index],
+        ),
+      ),
+    );
+  }
+
+  Widget _toolbar() {
+    if (widget.role == ClientRoleType.clientRoleAudience) {
+      return const SizedBox();
+    }
+    return Container(
+      alignment: Alignment.bottomCenter,
+      padding: const EdgeInsets.symmetric(
+        vertical: 48,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          RawMaterialButton(
+            onPressed: () {
+              setState(() {
+                muted = !muted;
+              });
+              _engine.muteLocalAudioStream(muted);
+            },
+            shape: const CircleBorder(),
+            elevation: 2.0,
+            fillColor: muted ? Colors.blueAccent : Colors.white,
+            padding: const EdgeInsets.all(12),
+            child: Icon(
+              muted ? Icons.mic_off : Icons.mic,
+              color: muted ? Colors.white : Colors.blueAccent,
+              size: 20,
+            ),
+          ),
+          RawMaterialButton(
+            onPressed: () => Navigator.pop(context),
+            shape: const CircleBorder(),
+            elevation: 2.0,
+            fillColor: Colors.redAccent,
+            padding: const EdgeInsets.all(15),
+            child: const Icon(
+              Icons.call_end,
+              color: Colors.white,
+              size: 35,
+            ),
+          ),
+          RawMaterialButton(
+            onPressed: () {
+              _engine.switchCamera();
+            },
+            shape: const CircleBorder(),
+            elevation: 2.0,
+            fillColor: Colors.white,
+            padding: const EdgeInsets.all(15),
+            child: const Icon(
+              Icons.switch_camera,
+              color: Colors.blueAccent,
+              size: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _panel() {
+    return Visibility(
+      visible: viewPanel,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 48),
+        alignment: Alignment.bottomCenter,
+        child: FractionallySizedBox(
+          heightFactor: 0.5,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 48),
+            child: ListView.builder(
+              reverse: true,
+              itemCount: _infoStrings.length,
+              itemBuilder: (context, index) {
+                if (_infoStrings.isEmpty) {
+                  return const Text("Null");
+                }
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 3,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Text(
+                            _infoStrings[index],
+                            style: const TextStyle(
+                              color: Colors.blueGrey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Meet-Up"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                viewPanel = !viewPanel;
+              });
+            },
+            icon: const Icon(Icons.info_outline),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.black,
+      body: Center(
+        child: Stack(
+          children: [
+            _viewrows(),
+            _panel(),
+            _toolbar(),
+          ],
+        ),
       ),
     );
   }
