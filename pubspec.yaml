@@ -31,12 +31,15 @@ dependencies:
   firebase_auth: ^4.17.9
   agora_rtc_engine: ^6.3.0
   permission_handler: ^11.3.0
+  zego_uikit_prebuilt_call: ^4.5.1
+  google_sign_in: ^6.2.1
+  uuid: ^4.3.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^3.0.0
+  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

@@ -3,10 +3,18 @@ import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:uuid/uuid.dart';
+import 'package:video_conference_app/services/login_services.dart';
 import 'package:video_conference_app/view/call_page.dart';
 
 class IndexPage extends StatefulWidget {
-  const IndexPage({super.key});
+  final String userName;
+  final String uid;
+  const IndexPage({
+    super.key,
+    required this.userName,
+    required this.uid,
+  });
 
   @override
   State<IndexPage> createState() => _IndexPageState();
@@ -16,6 +24,7 @@ class _IndexPageState extends State<IndexPage> {
   final _channelController = TextEditingController();
   bool _validateError = false;
   ClientRoleType? _role = ClientRoleType.clientRoleBroadcaster;
+  final uuid = const Uuid().v1();
 
   @override
   void dispose() {
@@ -30,6 +39,13 @@ class _IndexPageState extends State<IndexPage> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Meet-Up"),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  LoginServices.signOut();
+                },
+                icon: const Icon(Icons.logout_sharp))
+          ],
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -118,8 +134,11 @@ class _IndexPageState extends State<IndexPage> {
       await Future.sync(() => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  CallPage(channelName: _channelController.text, role: _role),
+              builder: (context) => CallPage(
+                userName: widget.userName,
+                uid: widget.uid,
+                callID: uuid,
+              ),
             ),
           ));
     }
