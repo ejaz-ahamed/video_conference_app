@@ -24,7 +24,7 @@ class HomePage extends ConsumerWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color(0xff6393c9),
+                  Colors.grey,
                   Color(0xffd8eaff),
                   Color(0xffd8eaff),
                 ],
@@ -38,8 +38,8 @@ class HomePage extends ConsumerWidget {
                   children: [
                     LogoWidget(),
                     TitleWidget(
-                      title: 'STREAM UP',
-                      subtitle: 'Lets Begin',
+                      title: 'MEET UP',
+                      subtitle: 'Lets Go',
                     ),
                     SizedBox(
                       height: 32,

@@ -23,7 +23,7 @@ class _ShowDialogWidgetState extends State<ShowDialogWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        backgroundColor: const Color(0xffd8eaff),
+        backgroundColor: Colors.white,
         shape:
             ContinuousRectangleBorder(borderRadius: BorderRadius.circular(30)),
         content: Column(
