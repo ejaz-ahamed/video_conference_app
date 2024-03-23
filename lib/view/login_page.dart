@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:video_conference_app/services/login_services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:video_conference_app/controller/login_provider.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context,WidgetRef ref) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -32,8 +28,8 @@ class _LoginPageState extends State<LoginPage> {
                 height: 48,
               ),
               ElevatedButton(
-                  onPressed: () async{
-                    await LoginServices.signInWithGoogle();
+                  onPressed: (){
+                     ref.read(loginProvider.notifier).googleSignin(context);
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(

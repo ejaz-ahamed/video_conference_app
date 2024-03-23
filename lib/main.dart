@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:video_conference_app/firebase_options.dart';
-import 'package:video_conference_app/services/login_services.dart';
 import 'package:video_conference_app/view/index.dart';
 import 'package:video_conference_app/view/login_page.dart';
 
@@ -21,26 +20,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Video Conference App',
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: FutureBuilder(
-        future: LoginServices.signInWithGoogle(),
-        builder: (context, snapshot) {
-          final user = FirebaseAuth.instance.currentUser;
-
-          if (user == null) {
-            return const LoginPage();
-          }
-          return IndexPage(
-            userName: snapshot.data!.user!.displayName!,
-            uid: snapshot.data!.user!.uid,
-          );
-        },
-      ),
+      home: user == null ? const LoginPage() : const HomePage(),
     );
   }
 }

@@ -1,151 +1,104 @@
-import 'dart:developer';
-
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-import 'package:video_conference_app/services/login_services.dart';
+import 'package:video_conference_app/controller/login_provider.dart';
 import 'package:video_conference_app/view/call_page.dart';
+import 'package:video_conference_app/widgets/elevatedbutton_widget.dart';
+import 'package:video_conference_app/widgets/logo_widget.dart';
+import 'package:video_conference_app/widgets/showdialogue_widget.dart';
+import 'package:video_conference_app/widgets/title_widget.dart';
 
-class IndexPage extends StatefulWidget {
-  final String userName;
-  final String uid;
-  const IndexPage({
-    super.key,
-    required this.userName,
-    required this.uid,
-  });
+class HomePage extends ConsumerWidget {
+  const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<IndexPage> createState() => _IndexPageState();
-}
-
-class _IndexPageState extends State<IndexPage> {
-  final _channelController = TextEditingController();
-  bool _validateError = false;
-  ClientRoleType? _role = ClientRoleType.clientRoleBroadcaster;
-  final uuid = const Uuid().v1();
-
-  @override
-  void dispose() {
-    _channelController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Meet-Up"),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  LoginServices.signOut();
-                },
-                icon: const Icon(Icons.logout_sharp))
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Column(
-              children: <Widget>[
-                const SizedBox(
-                  height: 20,
-                ),
-                Image.asset("assets/images/onboarding.jpg"),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextField(
-                  controller: _channelController,
-                  decoration: InputDecoration(
-                    hintText: 'Channel Name',
-                    errorText:
-                        _validateError ? "Channel name is mandatory" : null,
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        width: 1,
-                      ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final uuid = const Uuid().v1();
+    final data = ref.read(loginProvider.notifier);
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xff6393c9),
+                  Color(0xffd8eaff),
+                  Color(0xffd8eaff),
+                ],
+              ),
+            ),
+            child: const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LogoWidget(),
+                    TitleWidget(
+                      title: 'STREAM UP',
+                      subtitle: 'Lets Begin',
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(16),
-                      borderSide: const BorderSide(
-                        width: 1,
-                      ),
+                    SizedBox(
+                      height: 32,
                     ),
-                  ),
+                  ],
                 ),
-                RadioListTile(
-                  title: const Text("Create"),
-                  value: ClientRoleType.clientRoleBroadcaster,
-                  groupValue: _role,
-                  onChanged: (value) {
-                    setState(() {
-                      _role = value;
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: const Text("Join"),
-                  value: ClientRoleType.clientRoleAudience,
-                  groupValue: _role,
-                  onChanged: (value) {
-                    setState(() {
-                      _role = value;
-                    });
-                  },
-                ),
-                ElevatedButton(
-                  onPressed: _join,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(double.infinity, 50)),
-                  child: Text(
-                    _role == ClientRoleType.clientRoleBroadcaster
-                        ? 'Create'
-                        : "Join",
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
+          Positioned(
+            right: 16,
+            top: 32,
+            child: IconButton(
+                onPressed: () {
+                  data.signOut(context);
+                },
+                icon: const Icon(Icons.logout)),
+          )
+        ],
+      ),
+      bottomNavigationBar: Container(
+        color: const Color(0xffd8eaff),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButtonWidget(
+                height: 58,
+                text: 'Create',
+                width: MediaQuery.sizeOf(context).width / 2.2,
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => VideoCallPage(
+                              callID: uuid,
+                            )),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButtonWidget(
+                height: 58,
+                text: 'Join',
+                width: MediaQuery.sizeOf(context).width / 2.2,
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const ShowDialogWidget();
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  Future<void> _join() async {
-    setState(() {
-      _channelController.text.isEmpty
-          ? _validateError = true
-          : _validateError = false;
-    });
-    if (_channelController.text.isNotEmpty) {
-      await _handleCameraAndMic(Permission.camera);
-      await _handleCameraAndMic(Permission.microphone);
-      await Future.sync(() => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CallPage(
-                userName: widget.userName,
-                uid: widget.uid,
-                callID: uuid,
-              ),
-            ),
-          ));
-    }
-  }
-
-  Future<void> _handleCameraAndMic(Permission permission) async {
-    final status = await permission.request();
-    log(status.toString());
   }
 }

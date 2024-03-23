@@ -34,12 +34,16 @@ dependencies:
   zego_uikit_prebuilt_call: ^4.5.1
   google_sign_in: ^6.2.1
   uuid: ^4.3.3
+  flutter_riverpod: ^2.4.9
+  riverpod_annotation: ^2.3.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+  riverpod_generator: ^2.3.9
+  build_runner: ^2.4.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
