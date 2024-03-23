@@ -33,7 +33,7 @@ class VideoCallPage extends StatelessWidget {
                 );
               },
               child: Text(
-                'UID : ${callID}',
+                'UID : $callID',
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 14,
